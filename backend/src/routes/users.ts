@@ -38,7 +38,7 @@ userRouter.post('/registration', async (req, res) => {
       token: generateToken(createdUser)
     });
     return;
-  } catch (error) {
+  } catch (error:any) {
     res.status(400).send(error.message);
   }
 
@@ -60,6 +60,7 @@ userRouter.post('/signin', async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (user) {
     if (bcrypt.compareSync(req.body.password, user.password)) {
+      res.cookie('token', generateToken(user))
       res.send({
         _id: user._id,
         name: user.name,

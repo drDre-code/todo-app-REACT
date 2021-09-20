@@ -15,17 +15,17 @@ export default function RegistrationScreen(props) {
             alert('Password and confirm password are not the same');
         } else {
             try {
-                const backendUrl = process.env.REACT_APP_BACK_END_URL || "http://localhost:3002";
-                console.log(email, password);
+                const backendUrl = process.env.REACT_APP_BACK_END_URL;
                 const { data } = await axios.post(
                     `${backendUrl}/api/users/registration`,
                     { name, email, password }
                 );
-
-                props.history.push("/todo", { data });
+                document.cookie = `token=${data.token}`;
+                props.history.push("/todo");
 
             } catch (err) {
-                setError(err.response.data);
+                const message = err.message.data || err.message;
+                setError(message);
             }
         }
     };

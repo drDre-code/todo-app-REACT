@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/users', userRouter);
 app.use('/api/todos', router);
 
-app.listen(3002, () => console.log('running on port 3002'));
+
 
 
 export default app;

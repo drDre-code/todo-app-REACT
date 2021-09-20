@@ -47,6 +47,11 @@ footer {
   padding: 1rem;
   align-items: center;
 }
+.signout {
+  width: 80%;
+  margin: 1rem auto;
+  text-align: right;
+}
 /*Home Screen*/
 .home {
   margin: auto;
@@ -118,7 +123,7 @@ button:hover {
 }
 /*todo list*/
 .todo {
-  width: 50%;
+  width: 80%;
   margin: 1rem auto;
   background-color: #b1cae4;
   border-radius: 0.5rem;

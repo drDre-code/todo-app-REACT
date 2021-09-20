@@ -1,16 +1,27 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router';
+
 
 
 export default function TodoScreen(props) {
     const [name, setName] = useState('');
     const [data, setData] = useState('');
     const [todo, setTodo] = useState('');
+    const [percent, setPercent] = useState('');
+
+    const history = useHistory()
+
+    useEffect(() => {
+
+        fetchHandler();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const value = document.cookie.split(';').find(x => x.trim().startsWith('token'));
-    
-    const token = value.split('=')[1];
 
+    const token = value.split('=')[1];
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -75,7 +86,7 @@ export default function TodoScreen(props) {
     };
     const DeleteHandler = async (id) => {
         try {
-            const backendUrl = process.env.REACT_APP_BACK_END_URL || "http://localhost:3002";
+            const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
             await axios.delete(
                 `${backendUrl}/api/todos/mine/${id}`,
@@ -93,16 +104,12 @@ export default function TodoScreen(props) {
         }
     };
 
-    useEffect(() => {
 
-        fetchHandler();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const fetchHandler = async () => {
         // e.preventDefault();
         try {
+
             const backendUrl = process.env.REACT_APP_BACK_END_URL || "http://localhost:3002";
 
             const { data } = await axios.get(
@@ -115,6 +122,10 @@ export default function TodoScreen(props) {
             );
             if (data) {
                 setName(data.name);
+                const completed = data.todos.filter(value => value.status).length;
+                const total = data.todos.length;
+                const percentage = completed / total * 100;
+                setPercent(percentage)
                 const info = data.todos.map((value, index) => {
                     return (
                         <div key={index} className="todo">
@@ -169,13 +180,25 @@ export default function TodoScreen(props) {
         }
     };
 
+    const SignoutHandler = () => {
+        const cookies = document.cookie.split(';');
+        for (const cookie of cookies) {
+            const eqPos = cookie.indexOf("=");
+            const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+            document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        }
+        history.push("/")
+    };
 
 
     return (
 
         <div>
+            <div className="signout">
+                <button onClick={SignoutHandler}>Signout</button>
+            </div>
             <h1>Welcome {name},</h1>
-            <div> Percentage completion: </div>
+            <div> Percentage completion: {percent}% </div>
             <form onSubmit={submitHandler}>
                 <div className="todo">
                     <div className="addbutton">

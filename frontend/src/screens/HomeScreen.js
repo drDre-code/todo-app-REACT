@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom';
 
 export default function HomeScreen(props) {
     // if (document.cookie) { props.history.push("/todo"); }
-    if (props.location.pathname !== "/") { props.history.push("/"); };
+    // if (props.location.pathname !== "/") {
+    //     props.history.push("/");
+    //     // return;
+    // };
     return (
         <div className="home">
             <div className="welcome">

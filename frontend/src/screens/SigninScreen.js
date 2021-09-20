@@ -1,37 +1,47 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router';
 
 export default function SigninScreen(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [redirect, setRedirect] = useState(false);
     const history = useHistory();
+    useEffect(() => {
+        if (redirect) {
+            history.push("/todo");
+        }
+    }, [redirect, history]);
+    
     if (document.cookie) {
         const token = document.cookie.split(';').find(x => x.trim().startsWith('token'));
         if (token) {
-            history.push("/todo");
+            return (
+                <Redirect to="/todo" />
+            );
         }
     }
     const submitHandler = async (e) => {
         e.preventDefault();
 
         try {
-            const backendUrl = process.env.REACT_APP_BACK_END_URL || "http://localhost:3002";
+            const backendUrl = process.env.REACT_APP_BACK_END_URL;
 
             const { data } = await axios.post(
                 `${backendUrl}/api/users/signin`,
                 { email, password }
             );
             document.cookie = `token=${data.token}`;
-            props.history.push("/todo");
+            setRedirect(true);
 
         } catch (err) {
-            setError(err.response.data);
+            const message = err.message.data || err.message;
+            setError(message);
         }
-
-
     };
+    
     return (
         <div>
             <form className="form" onSubmit={submitHandler}>

@@ -26,12 +26,12 @@ router.delete('/mine/:id', isAuth, async (req: express.Request, res) => {
   try {
     if (req.user) {
       const todo = await Todo.findById(req.params.id);
-      console.log(todo, "c");
+
       if (todo) {
-        console.log(todo, "3");
+
         const value = await todo.remove();
 
-        console.log(todo, "d");
+
         res.send(value);
       }
     }
@@ -46,14 +46,14 @@ router.put('/mine/:id', isAuth, async (req: express.Request, res) => {
     if (req.user) {
       const todo = await Todo.findById(req.params.id);
       if (todo) {
-        // console.log(todo, "3");
+        
         todo.message = req.body.updatedTodo || todo.message;
         todo.status = req.body.status;
 
         const value = await todo.save();
 
         res.send(value);
-        console.log(value);
+
       }
     }
   } catch (err) {
@@ -64,7 +64,7 @@ router.put('/mine/:id', isAuth, async (req: express.Request, res) => {
 router.get('/mine', isAuth, async (req: express.Request, res,) => {
   try {
     if (req.user) {
-      console.log(req.user);
+
       const todos = await Todo.find({ email: req.user.email }).sort({ status: false });
       res.cookie('token', req.user.token);
       res.send({ name: req.user.name, todos });
